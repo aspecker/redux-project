@@ -33,6 +33,10 @@
 
 
 ### Resources Used
+
+#### Boilerplate from react/redux workshop
+* https://github.com/penmon/react-workshop/tree/master/react-workshop-start
+
 * Dave Abramov tutorials
     * https://egghead.io/courses/getting-started-with-redux
 * Talk Kol tutorials
