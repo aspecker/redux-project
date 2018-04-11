@@ -11,21 +11,19 @@
   <body>
     <h1> Redux Counting Game </h1>
     <h3> <span id='playerOne'>Player One</span> ||  <span id='playerTwo'>Player Two</span></h3>
-    <button id='increment-one'> Increment One</button>
-    <button id='increment-two'> Increment Two</button>
+    <button id='increment-one' data-value='1' class='increment'> Increment One</button>
+    <button id='increment-two' data-value='2' class='increment'> Increment Two</button>
     <h3 id='score'></h3>
 
 
     <script>
+
         // reducer function to manage store
         function reducer (state={score: 0, playerOneActive: false},action){
             switch (action.type){
-                case 'INCREMENT_ONE':
-                    console.log('Dispatching increment one');
-                    return {...state, score:state.score+1}
-                case 'INCREMENT_TWO':
-                    console.log('Dispatching increment two');
-                    return {...state, score:state.score+2}
+                case 'INCREMENT':
+                    console.log(`Dispatching increment by ${action.value}`);
+                    return {...state, score:state.score+action.value}
                 case 'TOGGLE_ACTIVE':
                     console.log('Dispatching toggle active');
                     return {...state, playerOneActive:!state.playerOneActive}
@@ -35,41 +33,34 @@
                 default:
                     return state;
             }
-
         }
         
-        var store = Redux.createStore(reducer);
+        const store = Redux.createStore(reducer);
 
         function render (){
+            
             $('#score').text(store.getState().score);
+            console.log(store.getState())
+
             if (store.getState().playerOneActive){
                 $('#playerOne').addClass('active')
                 $('#playerTwo').removeClass('active')
-                console.log(store.getState())
             } else{
                 $('#playerTwo').addClass('active')
                 $('#playerOne').removeClass('active')
-                console.log(store.getState())
             }
         }
 
         render();
         store.subscribe(render);
 
-        $(document).on('click','#increment-one',()=>{
-            store.dispatch({type: 'INCREMENT_ONE'})
+        $('.increment').on('click',()=>{
+            let incValue = parseInt(($(event.target).attr('data-value')));
+            store.dispatch({type: 'INCREMENT', value: incValue})
             if (store.getState().score===21){
-                alert ('Win')
-                store.dispatch({type: 'RESET_GAME'})
-            } else {
-            store.dispatch({type: 'TOGGLE_ACTIVE'})
-            }
-        })
-
-        $(document).on('click','#increment-two', ()=>{
-            store.dispatch({type: 'INCREMENT_TWO'})
-            if (store.getState().score===21){
-                alert('Win')
+                store.getState().playerOneActive ?
+                alert ('Player one wins!')
+                : alert ('Player two wins!')
                 store.dispatch({type: 'RESET_GAME'})
             } else {
             store.dispatch({type: 'TOGGLE_ACTIVE'})

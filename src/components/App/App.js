@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Player from './Components/Player';
-import Game from './Components/Game'
+import Player from '../../containers/Player';
+import Game from '../../containers/Game'
 
 
 const App = () =>(

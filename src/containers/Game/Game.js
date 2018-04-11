@@ -1,5 +1,6 @@
 import React from 'react';
 import { Increment } from '../../actions'
+import { connect } from 'react-redux'
 
 const Game = ({dispatch}) =>(
     <div>
