@@ -21,12 +21,16 @@
         function reducer (state={score: 0, playerOneActive: false},action){
             switch (action.type){
                 case 'INCREMENT_ONE':
+                    console.log('Dispatching increment one');
                     return {...state, score:state.score+1}
                 case 'INCREMENT_TWO':
+                    console.log('Dispatching increment two');
                     return {...state, score:state.score+2}
                 case 'TOGGLE_ACTIVE':
+                    console.log('Dispatching toggle active');
                     return {...state, playerOneActive:!state.playerOneActive}
                 case 'RESET_GAME':
+                    console.log('Dispatching reset game');
                     return {...state, score: 0, playerOneActive: false}
                 default:
                     return state;
@@ -54,11 +58,22 @@
 
         $(document).on('click','#increment-one',()=>{
             store.dispatch({type: 'INCREMENT_ONE'})
+            if (store.getState().score===21){
+                alert ('Win')
+                store.dispatch({type: 'RESET_GAME'})
+            } else {
             store.dispatch({type: 'TOGGLE_ACTIVE'})
+            }
         })
+
         $(document).on('click','#increment-two', ()=>{
             store.dispatch({type: 'INCREMENT_TWO'})
+            if (store.getState().score===21){
+                alert('Win')
+                store.dispatch({type: 'RESET_GAME'})
+            } else {
             store.dispatch({type: 'TOGGLE_ACTIVE'})
+            }
         })
 
 
