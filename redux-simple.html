@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redux Counting Game</title>
+    <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<style>
+    .active {color: red}
+</style>  
+</head>
+  <body>
+    <h1> Redux Counting Game </h1>
+    <h3> <span id='playerOne'>Player One</span> ||  <span id='playerTwo'>Player Two</span></h3>
+    <button id='increment-one'> Increment One</button>
+    <button id='increment-two'> Increment Two</button>
+    <h3 id='score'></h3>
+
+
+    <script>
+        // reducer function to manage store
+        function reducer (state={score: 0, playerOneActive: false},action){
+            switch (action.type){
+                case 'INCREMENT_ONE':
+                    return {...state, score:state.score+1}
+                case 'INCREMENT_TWO':
+                    return {...state, score:state.score+2}
+                case 'TOGGLE_ACTIVE':
+                    return {...state, playerOneActive:!state.playerOneActive}
+                case 'RESET_GAME':
+                    return {...state, score: 0, playerOneActive: false}
+                default:
+                    return state;
+            }
+
+        }
+        
+        var store = Redux.createStore(reducer);
+
+        function render (){
+            $('#score').text(store.getState().score);
+            if (store.getState().playerOneActive){
+                $('#playerOne').addClass('active')
+                $('#playerTwo').removeClass('active')
+                console.log(store.getState())
+            } else{
+                $('#playerTwo').addClass('active')
+                $('#playerOne').removeClass('active')
+                console.log(store.getState())
+            }
+        }
+
+        render();
+        store.subscribe(render);
+
+        $(document).on('click','#increment-one',()=>{
+            store.dispatch({type: 'INCREMENT_ONE'})
+            store.dispatch({type: 'TOGGLE_ACTIVE'})
+        })
+        $(document).on('click','#increment-two', ()=>{
+            store.dispatch({type: 'INCREMENT_TWO'})
+            store.dispatch({type: 'TOGGLE_ACTIVE'})
+        })
+
+
+
+
+
+    </script>
+    
+</body>
+</html>
