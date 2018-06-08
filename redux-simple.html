@@ -11,6 +11,7 @@
   <body>
     <h1> Redux Counting Game </h1>
     <h3> <span id='playerOne'>Player One</span> ||  <span id='playerTwo'>Player Two</span></h3>
+    <h3> P1 Guesses:<span id='playerOneGuesses'></span> ||  P2 Guesses:<span id='playerTwoGuesses'>Player Two</span></h3>
     <button id='increment-one' data-value='1' class='increment'> Increment One</button>
     <button id='increment-two' data-value='2' class='increment'> Increment Two</button>
     <h3 id='score'></h3>
@@ -19,17 +20,24 @@
     <script>
 
         // reducer function to manage store
-        function reducer (state={score: 0, playerOneActive: false},action){
+        function reducer (state={score: 0, playerOneActive: false, playerOneGuesses:[],playerTwoGuesses:[]},action){
             switch (action.type){
                 case 'INCREMENT':
                     console.log(`Dispatching increment by ${action.value}`);
                     return {...state, score:state.score+action.value}
                 case 'TOGGLE_ACTIVE':
                     console.log('Dispatching toggle active');
-                    return {...state, playerOneActive:!state.playerOneActive}
+                    return {...state, playerOneActive:!state.playerOneActive};
+                case 'LOG_GUESS':
+                    console.log('Dispatching log guess');
+                    if (state.playerOneActive===true){
+                        return {...state, playerOneGuesses:[...state.playerOneGuesses, action.value]}
+                    } else {
+                        return {...state, playerTwoGuesses:[...state.playerTwoGuesses, action.value]}
+                    }
                 case 'RESET_GAME':
                     console.log('Dispatching reset game');
-                    return {...state, score: 0, playerOneActive: false}
+                    return {...state, score: 0, playerOneActive: false, playerOneGuesses:[], playerTwoGuesses:[]}
                 default:
                     return state;
             }
@@ -38,10 +46,11 @@
         const store = Redux.createStore(reducer);
 
         function render (){
-            
             $('#score').text(store.getState().score);
+            $('#playerOneGuesses').text(store.getState().playerOneGuesses);
+            $('#playerTwoGuesses').text(store.getState().playerTwoGuesses);
             console.log(store.getState())
-
+            
             if (store.getState().playerOneActive){
                 $('#playerOne').addClass('active')
                 $('#playerTwo').removeClass('active')
@@ -57,12 +66,17 @@
         $('.increment').on('click',()=>{
             let incValue = parseInt(($(event.target).attr('data-value')));
             store.dispatch({type: 'INCREMENT', value: incValue})
+            store.dispatch({type: 'LOG_GUESS', value: incValue})
             if (store.getState().score===21){
                 store.getState().playerOneActive ?
                 alert ('Player one wins!')
                 : alert ('Player two wins!')
                 store.dispatch({type: 'RESET_GAME'})
-            } else {
+            } else if (store.getState().score>21){
+                store.getState().playerOneActive ?
+                alert ('Player two wins!')
+                : alert ('Player one wins!')
+            }else {
             store.dispatch({type: 'TOGGLE_ACTIVE'})
             }
         })
